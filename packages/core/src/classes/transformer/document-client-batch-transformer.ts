@@ -307,7 +307,9 @@ export class DocumentClientBatchTransformer extends LowOrderTransformers {
         if (isBatchAddCreateItem(batchItem) || isBatchAddPutItem(batchItem)) {
           // transform put item
           const dynamoPutItem = this.toDynamoPutItem(
-            'create' in batchItem ? batchItem.create.item : batchItem.put.item,
+            isBatchAddPutItem(batchItem)
+              ? batchItem.put.item
+              : batchItem.create.item,
             {overwriteIfExists: isBatchAddPutItem(batchItem)},
             metadataOptions
           );
