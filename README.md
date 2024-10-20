@@ -169,7 +169,7 @@ export class Organisation {
   active: boolean;
 
   @AutoGenerateAttribute({
-    strategy: AUTO_GENERATE_ATTRIBUTE_STRATEGY.EPOCH,
+    strategy: AUTO_GENERATE_ATTRIBUTE_STRATEGY.EPOCH_DATE,
     autoUpdate: true, // this will make this attribute and any indexes referencing it auto update for any write operation
   })
   updatedAt: number;
@@ -178,7 +178,7 @@ export class Organisation {
 
 #### Initialize default connection
 
-The connection initialization steps slightly defers when using AWS SDK V2 vs V3.
+The connection initialization steps slightly differs when using AWS SDK V2 vs V3.
 
 ##### When using AWS SDK V2
 
