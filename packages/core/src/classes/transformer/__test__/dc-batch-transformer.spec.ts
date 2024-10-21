@@ -48,6 +48,11 @@ test('transforms into batch write items', () => {
   user2.name = 'user 2';
   user2.email = 'user@test.com';
 
+  const user3 = new User();
+  user3.id = '3';
+  user3.status = 'inactive';
+  user3.name = 'user 3';
+
   const writeBatch = new WriteBatch().add([
     // simple create item
     {
@@ -79,6 +84,15 @@ test('transforms into batch write items', () => {
         item: user2,
       },
     },
+    // tets that "putting" an item also works.
+    {
+      create: {
+        item: user3,
+        options: {
+          overwriteIfExists: true,
+        },
+      },
+    },
   ]);
 
   const transformed = dcBatchTransformer.toDynamoWriteBatchItems(writeBatch);
@@ -108,6 +122,20 @@ test('transforms into batch write items', () => {
               Key: {
                 PK: 'ORG#ORG_ID_1',
                 SK: 'ORG#ORG_ID_1',
+              },
+            },
+          },
+          {
+            PutRequest: {
+              Item: {
+                GSI1PK: 'USER#STATUS#inactive',
+                GSI1SK: 'USER#user 3',
+                PK: 'USER#3',
+                SK: 'USER#3',
+                __en: 'user',
+                id: '3',
+                name: 'user 3',
+                status: 'inactive',
               },
             },
           },
