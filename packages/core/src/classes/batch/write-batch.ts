@@ -1,15 +1,14 @@
 import {EntityTarget} from '@typedorm/common';
 import {Batch} from './batch';
 
+interface AddCreateItemOptions {
+  overwriteIfExists?: boolean;
+}
+
 export interface WriteBatchCreate<Entity> {
   create: {
     item: Entity;
-  };
-}
-
-export interface WriteBatchPut<Entity> {
-  put: {
-    item: Entity;
+    options?: AddCreateItemOptions;
   };
 }
 
@@ -22,7 +21,6 @@ export interface WriteBatchDelete<Entity, PrimaryKey> {
 
 export type WriteBatchItem<Entity, PrimaryKey> =
   | WriteBatchCreate<Entity>
-  | WriteBatchPut<Entity>
   | WriteBatchDelete<Entity, PrimaryKey>;
 
 export class WriteBatch extends Batch<WriteBatchItem<any, any>> {
@@ -31,19 +29,11 @@ export class WriteBatch extends Batch<WriteBatchItem<any, any>> {
     return this;
   }
 
-  addCreateItem<Entity>(item: Entity): this {
+  addCreateItem<Entity>(item: Entity, options?: AddCreateItemOptions): this {
     this.items.push({
       create: {
         item,
-      },
-    });
-    return this;
-  }
-
-  addPutItem<Entity>(item: Entity): this {
-    this.items.push({
-      put: {
-        item,
+        options,
       },
     });
     return this;

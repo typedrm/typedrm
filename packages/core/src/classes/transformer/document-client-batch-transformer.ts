@@ -8,11 +8,7 @@ import {
 import {v4} from 'uuid';
 import {getHashedIdForInput} from '../../helpers/get-hashed-id-for-input';
 import {ReadBatch, ReadBatchItem} from '../batch/read-batch';
-import {
-  isBatchAddCreateItem,
-  isBatchAddDeleteItem,
-  isBatchAddPutItem,
-} from '../batch/type-guards';
+import {isBatchAddCreateItem, isBatchAddDeleteItem} from '../batch/type-guards';
 import {WriteBatchItem, WriteBatch} from '../batch/write-batch';
 import {Connection} from '../connection/connection';
 import {isWriteTransactionItemList} from '../transaction/type-guards';
@@ -303,14 +299,11 @@ export class DocumentClientBatchTransformer extends LowOrderTransformers {
 
     return batchItems.reduce(
       (acc, batchItem) => {
-        // is create or put
-        if (isBatchAddCreateItem(batchItem) || isBatchAddPutItem(batchItem)) {
+        if (isBatchAddCreateItem(batchItem)) {
           // transform put item
           const dynamoPutItem = this.toDynamoPutItem(
-            isBatchAddPutItem(batchItem)
-              ? batchItem.put.item
-              : batchItem.create.item,
-            {overwriteIfExists: isBatchAddPutItem(batchItem)},
+            batchItem.create.item,
+            {overwriteIfExists: batchItem.create.options?.overwriteIfExists},
             metadataOptions
           );
           if (!isWriteTransactionItemList(dynamoPutItem)) {
