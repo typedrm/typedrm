@@ -520,7 +520,8 @@ const user = new User();
 user.id = '1';
 // ...other user props
 
-// first we create a write batch instance with all the items that we would like to write in a batch
+// first we create a write batch instance with all the items that we would like
+// to write in a batch
 const batchToWrite = new WriteBatch()
   .addCreateItem(user)
   .addDeleteItem<Organisation, OrgPrimaryKey>(Organisation, {id: 'org-1'})
@@ -534,6 +535,14 @@ const batchResponse = await getBatchManager().write(batchToWrite, {
 // response
 // batchResponse.failedItems - items that failed to put
 // batchResponse.unprocessedItems - items that failed to process even after all retries
+```
+
+Note that `addCreateItem` can also behave like a `put` operation when the
+`overwriteIfExists` option is set to `true`:
+
+```Typescript
+const batchToWrite = new WriteBatch()
+  .addCreateItem(user, { overwriteIfExists: true })
 ```
 
 ### Retry unprocessed write items in batches
