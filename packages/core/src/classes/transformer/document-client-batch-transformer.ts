@@ -299,6 +299,7 @@ export class DocumentClientBatchTransformer extends LowOrderTransformers {
 
     return batchItems.reduce(
       (acc, batchItem) => {
+        // is create
         if (isBatchAddCreateItem(batchItem)) {
           // transform put item
           const dynamoPutItem = this.toDynamoPutItem(
