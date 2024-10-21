@@ -8,13 +8,16 @@ test('creates a write batch', () => {
   const user2 = new User();
   user2.name = 'user2';
 
+  const user3 = new User();
+  user3.name = 'user3';
+
   const writeBatch = new WriteBatch()
     .addCreateItem(user)
     .addCreateItem(user2)
+    .addCreateItem(user3, {overwriteIfExists: true})
     .addDeleteItem<User, UserPrimaryKey>(User, {
       id: '3',
     });
-
   expect(writeBatch.items).toEqual([
     {
       create: {
@@ -27,6 +30,16 @@ test('creates a write batch', () => {
       create: {
         item: {
           name: 'user2',
+        },
+      },
+    },
+    {
+      create: {
+        item: {
+          name: 'user3',
+        },
+        options: {
+          overwriteIfExists: true,
         },
       },
     },
@@ -47,6 +60,10 @@ test('creates batch from bulk input', () => {
 
   const user2 = new User();
   user2.name = 'user2';
+
+  const user3 = new User();
+  user3.name = 'user3';
+
   const writeBatchFromDump = new WriteBatch().add([
     {
       create: {
@@ -56,6 +73,14 @@ test('creates batch from bulk input', () => {
     {
       create: {
         item: user2,
+      },
+    },
+    {
+      create: {
+        item: user3,
+        options: {
+          overwriteIfExists: true,
+        },
       },
     },
   ]);
@@ -72,6 +97,16 @@ test('creates batch from bulk input', () => {
       create: {
         item: {
           name: 'user2',
+        },
+      },
+    },
+    {
+      create: {
+        item: {
+          name: 'user3',
+        },
+        options: {
+          overwriteIfExists: true,
         },
       },
     },
